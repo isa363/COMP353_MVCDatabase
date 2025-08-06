@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MVC Dashboard</title>
+    <style>
+        header {
+            background-color: #007BFF;
+            color: white;
+            padding: 15px 20px;
+            text-align: left;
+            font-family: Arial, sans-serif;
+            font-size: 1.8em;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .menu-container {
+            width: 35%;
+            margin: 0 auto;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .menu-container a {
+            text-decoration: none;
+            background-color: #007BFF;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            margin: 8px 0;
+            width: 100%;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: background 0.2s;
+        }
+
+        .menu-container a:hover {
+            background-color: #0056b3;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    MVC Montreal Volleyball Club 🏐
+</header>
+
+<h1>Welcome to MVC Dashboard</h1>
+
+<div class="menu-container">
+    <a href="{{ url_for('show_members') }}">Members 📋</a>
+    <a href="{{ url_for('show_employees') }}">Employees 👩‍💼</a>
+    <a href="{{ url_for('show_families') }}">Family members 👨‍👩‍👧</a>
+    <a href="{{ url_for('show_clubs') }}">Clubs 🏠</a>
+    <a href="{{ url_for('show_teams') }}">Teams 🏆</a>
+    <a href="{{ url_for('show_memberships') }}">Memberships 💳</a>
+</div>
+
+</body>
+</html>
+
