@@ -21,39 +21,105 @@ def index():
     return render_template('index.html')
 
 @app.route('/members')
-def members():
+def show_members():
     conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM Members")
+    cursor = conn.cursor()
+    cursor.execute("SELECT mID, firstName, lastName FROM Members")
     members = cursor.fetchall()
-    cursor.close()
     conn.close()
     return render_template('members.html', members=members)
 
 @app.route('/add_member', methods=['GET', 'POST'])
 def add_member():
     if request.method == 'POST':
-        fields = ["mID", "NAS", "medicare", "phone", "address", "city", "province", "postalCode",
-                  "type", "firstName", "lastName", "genre", "birth", "height", "weight", "age"]
-        values = [request.form.get(f) for f in fields]
-
+        conn = get_db_connection()
+        cursor = conn.cursor()
         try:
-            conn = get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute("""
+            mID = request.form['mID']
+            NAS = request.form['NAS']
+            medicare = request.form['medicare']
+            phone = request.form['phone']
+            address = request.form['address']
+            city = request.form['city']
+            province = request.form['province']
+            postalCode = request.form['postalCode']
+            type_ = request.form['type']
+            firstName = request.form['firstName']
+            lastName = request.form['lastName']
+            genre = request.form['genre']
+            birth = request.form['birth']
+            height = request.form['height']
+            weight = request.form['weight']
+            age = request.form['age']
+
+            query = """
                 INSERT INTO Members (mID, NAS, medicare, phone, address, city, province, postalCode,
                     type, firstName, lastName, genre, birth, height, weight, age)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """, values)
+            """
+            values = (mID, NAS, medicare, phone, address, city, province, postalCode,
+                      type_, firstName, lastName, genre, birth, height, weight, age)
+            cursor.execute(query, values)
             conn.commit()
-            cursor.close()
+            flash('Member successfully added!', 'success')
+            return redirect(url_for('show_members'))
+        except mysql.connector.Error as e:
+            conn.rollback()
+            flash(f"Error adding member: {str(e)}", 'error')
+            return redirect(url_for('add_member'))
+        finally:
             conn.close()
-            return redirect('/members')
-        except mysql.connector.Error as err:
-            return f"Error: {err}"
+
     return render_template('add_member.html')
 
-# You can add other routes like /memberships, /personnel, etc.
+@app.route('/employees')
+def show_employees():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT pID, firstName, lastName FROM Personnel")
+    employees = cursor.fetchall()
+    conn.close()
+    return render_template('employees.html', employees=employees)
+
+@app.route('/families')
+def show_families():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT fID, firstName, lastName FROM FamilyMembers")
+    families = cursor.fetchall()
+    conn.close()
+    return render_template('families.html', families=families)
+
+@app.route('/clubs')
+def show_clubs():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT name, type, city, website, phone FROM ClubLocations")
+    clubs = cursor.fetchall()
+    conn.close()
+    return render_template('clubs.html', clubs=clubs)
+
+@app.route('/teams')
+def show_teams():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT Teams.teamID, Teams.teamName, Teams.teamGenre, TeamLocations.clubName
+        FROM Teams
+        JOIN TeamLocations ON Teams.teamID = TeamLocations.teamID
+    """)
+    teams = cursor.fetchall()
+    conn.close()
+    return render_template('teams.html', teams=teams)
+
+@app.route('/memberships')
+def show_memberships():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT mID, clubName, active FROM Memberships")
+    memberships = cursor.fetchall()
+    conn.close()
+    return render_template('memberships.html', memberships=memberships)
 
 if __name__ == '__main__':
     # Use the PORT Render provides or default to 5000 locally
