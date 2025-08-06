@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: mvc-flask-app
+    env: python
+    buildCommand: ""
+    startCommand: gunicorn app:app
+    plan: free
+    envVars:
+      - key: MYSQL_PASSWORD
+        value: 7h3ldn8P
